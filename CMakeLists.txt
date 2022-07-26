@@ -85,7 +85,7 @@
 # FreeType explicitly marks the API to be exported and relies on the compiler
 # to hide all other symbols. CMake supports a C_VISBILITY_PRESET property
 # starting with 2.8.12.
-cmake_minimum_required(VERSION 2.8.12)
+#cmake_minimum_required(VERSION 2.8.12)
 
 if (NOT CMAKE_VERSION VERSION_LESS 3.3)
   # Allow symbol visibility settings also on static libraries. CMake < 3.3
@@ -131,7 +131,7 @@ else ()
 endif ()
 
 
-project(freetype C)
+#project(freetype C)
 
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "10")
@@ -151,10 +151,16 @@ set(LIBRARY_SOVERSION "6")
 # optionally found anyway. Use `-DCMAKE_DISABLE_FIND_PACKAGE_x=TRUE` to disable
 # searching for a packge entirely (x is the CMake package name, so "BZip2"
 # instead of "BZIP2").
-option(FT_WITH_ZLIB "Use system zlib instead of internal library." OFF)
-option(FT_WITH_BZIP2 "Support bzip2 compressed fonts." OFF)
-option(FT_WITH_PNG "Support PNG compressed OpenType embedded bitmaps." OFF)
-option(FT_WITH_HARFBUZZ "Improve auto-hinting of OpenType fonts." OFF)
+#option(FT_WITH_ZLIB "Use system zlib instead of internal library." OFF)
+#option(FT_WITH_BZIP2 "Support bzip2 compressed fonts." OFF)
+#option(FT_WITH_PNG "Support PNG compressed OpenType embedded bitmaps." OFF)
+#option(FT_WITH_HARFBUZZ "Improve auto-hinting of OpenType fonts." OFF)
+set(FT_WITH_ZLIB OFF)
+set(FT_WITH_BZIP2 OFF)
+set(FT_WITH_PNG OFF)
+set(FT_WITH_HARFBUZZ OFF)
+
+set(SKIP_INSTALL_ALL ON)
 
 
 # Disallow in-source builds
@@ -171,7 +177,7 @@ endif ()
 
 
 # Add local cmake modules
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/builds/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/builds/cmake)#list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/builds/cmake)
 
 
 if (BUILD_FRAMEWORK)
@@ -188,7 +194,7 @@ endif ()
 if (FT_WITH_HARFBUZZ)
   find_package(HarfBuzz 1.3.0 REQUIRED)
 else ()
-  find_package(HarfBuzz 1.3.0)
+  #find_package(HarfBuzz 1.3.0)
 endif ()
 
 if (FT_WITH_PNG)
@@ -215,7 +221,7 @@ if (UNIX)
   check_include_file("fcntl.h" HAVE_FCNTL_H)
   check_include_file("stdint.h" HAVE_STDINT_H)
 
-  file(READ "${PROJECT_SOURCE_DIR}/builds/unix/ftconfig.in"
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/builds/unix/ftconfig.in"#file(READ "${PROJECT_SOURCE_DIR}/builds/unix/ftconfig.in"
     FTCONFIG_H)
   if (HAVE_UNISTD_H)
     string(REGEX REPLACE
@@ -235,7 +241,7 @@ if (UNIX)
   string(REPLACE "/undef " "#undef "
     FTCONFIG_H "${FTCONFIG_H}")
 else()
-  file(READ "${PROJECT_SOURCE_DIR}/include/freetype/config/ftconfig.h"
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/freetype/config/ftconfig.h"#file(READ "${PROJECT_SOURCE_DIR}/include/freetype/config/ftconfig.h"
     FTCONFIG_H)
 endif ()
 file(WRITE "${PROJECT_BINARY_DIR}/include/freetype/config/ftconfig.h"
@@ -243,7 +249,7 @@ file(WRITE "${PROJECT_BINARY_DIR}/include/freetype/config/ftconfig.h"
 
 
 # Create the options file
-file(READ "${PROJECT_SOURCE_DIR}/include/freetype/config/ftoption.h"
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/freetype/config/ftoption.h"#file(READ "${PROJECT_SOURCE_DIR}/include/freetype/config/ftoption.h"
   FTOPTION_H)
 if (ZLIB_FOUND)
   string(REGEX REPLACE
@@ -342,6 +348,8 @@ add_library(freetype
   ${PRIVATE_HEADERS}
   ${BASE_SRCS}
 )
+
+set_target_properties(freetype PROPERTIES FOLDER "Editor Libs")
 
 set_target_properties(
   freetype PROPERTIES
