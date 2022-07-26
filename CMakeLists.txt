@@ -349,8 +349,6 @@ add_library(freetype
   ${BASE_SRCS}
 )
 
-set_target_properties(freetype PROPERTIES FOLDER "Editor Libs")
-
 set_target_properties(
   freetype PROPERTIES
     C_VISIBILITY_PRESET hidden)
